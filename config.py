@@ -11,4 +11,4 @@ class Config:
     SECRET_KEY = 'your_secret_key_here'
 
     # Other Configurations
-    # ...
+    LLAMA_BASE_URL = "http://localhost:1234/v1"

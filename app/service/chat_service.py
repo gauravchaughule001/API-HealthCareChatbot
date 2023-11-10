@@ -1,3 +1,8 @@
+import replicate
+import os
+import openai
+from app import mongo_db
+
 intents = [
     {
         "tag": "greetings",
@@ -343,8 +348,41 @@ intents = [
     }
     ]
 
+
+os.environ["REPLICATE_API_TOKEN"] = "r8_QMTKR3BK2GB8QNbaQzHAtRcoAMA7Lwg1PXPW1"
+def get_llama_response(question):
+    try:
+        output = replicate.run(
+            "meta/llama-2-70b-chat:2c1608e18606fad2812020dc541930f2d0495ce32eee50074220b87300bc16e1",
+            input={"prompt": "Write an essay on My Favorite Teacher in 200 words"}
+        )
+        # The meta/llama-2-70b-chat model can stream output as it's running.
+        # The predict method returns an iterator, and you can iterate over that output.
+        print(output)
+        response = []
+        for item in output:
+            response.append(item)
+            print(item, end="")
+        return response
+    except Exception as e:
+        print(e)
+        return 500
+
+
 def chat_service(question):
-    inputValue = question
-    for x in intents:
-        if inputValue in x['patterns'] :
-            return x['responses'][0]
+    openai.api_base = "http://localhost:1234/v1"
+    openai.api_key = ""
+    prev_data = mongo_db.chats.find({},{})
+    prev_list = []
+    for i in prev_data:
+        prev_list.append(i)
+    completion = openai.ChatCompletion.create(
+      model="local-model",
+      messages=[
+        {"role": "system", "content": prev_list[-1]['answer']},
+        {"role": "user", "content": question}
+      ]
+    )
+    obj = completion.choices[0].message['content']
+    print(obj)
+    return obj

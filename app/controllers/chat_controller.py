@@ -33,7 +33,7 @@ class ChatController:
             }
         return response_data, 200
     
-    def get_chats(self):
+    def get_chats(self, number):
         chats = mongo_db.chats.find({},{})
         chat_list=[]
         for x in chats:
@@ -43,7 +43,12 @@ class ChatController:
                 'answer':x['answer'],
                 'time':x['time']
             })
-        response_data = {
-                'data':chat_list
+        if number!=0:
+            response_data = {
+                    'data':chat_list[-int(number): ]
+                }
+        else:
+            response_data = {
+                    'data': chat_list
             }
         return response_data, 200

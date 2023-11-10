@@ -12,5 +12,5 @@ class ChatView:
         chat = self.chat_controller.chat(request)
         return jsonify(chat), 201
     
-    def get_chats(self):
-        return jsonify(self.chat_controller.get_chats()), 200
+    def get_chats(self, number):
+        return jsonify(self.chat_controller.get_chats(number)), 200

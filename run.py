@@ -32,7 +32,7 @@ def login():
     return auth_view.login(username, password)
 
 @app.route('/hello', methods=['GET'])
-def hello():
+def hello_world():
     return jsonify({'message':'Hello World Using Python Rest API !'}), 200
 
 @app.route('/users', methods=['POST'])
@@ -77,7 +77,8 @@ def chat():
 
 @app.route('/chat', methods=['GET'])
 def get_chats():
-    return chat_view.get_chats()
+    number = request.args.get('number')
+    return chat_view.get_chats(number)
 
 if __name__ == '__main__':
     app.run(debug=True)
